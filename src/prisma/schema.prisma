@@ -2,10 +2,43 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model CoreUser {
+  id             String                  @id @default(uuid()) @db.Uuid
+  email          String                  @unique() @db.VarChar(50)
+  firstName      String                  @db.VarChar
+  middleName     String?                 @db.VarChar
+  lastName       String                  @db.VarChar
+  lastLogin      DateTime?               @db.Timestamptz(6)
+  lastLoginIp    String?                 @db.VarChar(20)
+  isAdmin        Boolean                 @default(false) @db.Boolean
+  status         Boolean                 @default(true) @db.Boolean
+  createdAt      DateTime                @default(now()) @db.Timestamptz(6)
+  createdBy      String?                 @db.Uuid
+  updatedAt      DateTime                @default(now()) @db.Timestamptz(6)
+  updatedBy      String?                 @db.Uuid
+  hashedPassword CoreUserHashedPassword?
+
+  @@map("core_user")
+}
+
+model CoreUserHashedPassword {
+  id        String   @id @default(uuid()) @db.Uuid
+  password  String   @db.VarChar(255)
+  userId    String   @unique() @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  createdBy String?  @db.Uuid
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedBy String?  @db.Uuid
+  user      CoreUser @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("core_user_hashed_password")
 }
