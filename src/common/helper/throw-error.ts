@@ -1,88 +1,64 @@
-import { ERROR_CODE } from '../constant/ERROR_CODE';
-
-import { Response } from 'express';
-
-export const throwError = (
-  errorObj: any,
-  message?: string,
-): { code: number; message: string } => {
-  if (errorObj.code === ERROR_CODE.conflict) {
-    return {
-      code: 409,
-      message: message || 'Resource already exists',
-    };
-  } else if (errorObj.code === ERROR_CODE.notFound) {
-    return {
-      code: 404,
-      message: message || 'Resource not found',
-    };
-  } else if (errorObj.code === ERROR_CODE.unathorize) {
-    return {
-      code: 403,
-      message: message || 'Unathorized',
-    };
-  } else if (errorObj.code === ERROR_CODE.badRequest) {
-    return {
-      code: 400,
-      message: message || 'Bad request',
-    };
-  } else if (errorObj.code === ERROR_CODE.requestTimeout) {
-    return {
-      code: 408,
-      message: message || 'Request time out',
-    };
-  } else {
-    return {
-      code: 500,
-      message: message || 'Internal Server Error',
-    };
+export class ApplicationError extends Error {
+  constructor(message: string) {
+      super();
+      this.message = message;
   }
+
+  getCode() { return 500; }
 };
 
-export const serverError = (response: Response, message?: string) => {
-  const err = throwError({ code: ERROR_CODE.internal }, message);
-  return response.status(err.code).json({
-    message: err.message,
-    success: false,
-  });
+// HTTP 401 Unauthorized -> Invalid login credentials
+export class UnauthorizedException extends ApplicationError {
+  constructor(message: string) {
+      super(message);
+      this.name = 'Unauthorized';
+  }
+  getCode() { return 401; }
+}
+
+// HTTP 409 Conflict -> Duplication
+export class  ConflictException extends ApplicationError {
+  constructor(message: string) {
+      super(message);
+      this.name = 'Conflict';
+  }
+  getCode() { return 409; }
+}
+
+// 403 Forbidden
+export class ForbiddenException extends ApplicationError {
+  constructor(message: string) {
+      super(message);
+      this.name = 'Forbidden';
+  }
+  getCode() { return 403; }
+}
+
+// HTTP 400 BadRequest -> Authorized to perform request
+export class BadRequestException extends ApplicationError {
+  constructor(message: string) {
+      super(message);
+      this.name = 'BadRequest';
+  }
+  getCode() { return 400; }
 };
 
-export const notFoundError = (response: Response, message?: string) => {
-  const err = throwError({ code: ERROR_CODE.notFound }, message);
-  return response.status(err.code).json({
-    message: err.message,
-    success: false,
-  });
+// HTTP 404 NotFound -> Resource not found
+export class NotFoundException extends ApplicationError {
+  constructor(message: string) {
+      super(message);
+      this.name = 'NotFound';
+  }
+
+  getCode() { return 404; }    
 };
 
-export const unathorizedError = (response: Response, message?: string) => {
-  const err = throwError({ code: ERROR_CODE.unathorize }, message);
-  return response.status(err.code).json({
-    message: err.message,
-    success: false,
-  });
-};
+// HTTP 408 Timeout -> Too much time to retrieve resource
+export class RequestTimeoutException extends ApplicationError {
+  constructor(message: string) {
+      super(message);
+      this.name = 'RequestTimeout';
+  }
 
-export const badRequestException = (response: Response, message?: string) => {
-  const err = throwError({ code: ERROR_CODE.badRequest }, message);
-  return response.status(err.code).json({
-    message: err.message,
-    success: false,
-  });
-};
-
-export const conflictException = (response: Response, message?: string) => {
-  const err = throwError({ code: ERROR_CODE.conflict }, message);
-  return response.status(err.code).json({
-    message: err.message,
-    success: false,
-  });
-};
-
-export const requestTimeoutException = (response: Response, message?: string) => {
-  const err = throwError({ code: ERROR_CODE.requestTimeout }, message);
-  return response.status(err.code).json({
-    message: err.message,
-    success: false,
-  });
+  getCode() { return 408; }    
 };

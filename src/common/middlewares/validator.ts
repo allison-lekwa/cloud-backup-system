@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ValidationError, validate } from 'class-validator'
+import { RequestWithUser } from "../interface";
 
 export function Body<T extends object>(dtoClass: new () => T) {
   return validationMiddleware(dtoClass, "body");
@@ -15,7 +16,7 @@ export function validationMiddleware<T extends object>(
   dtoClass: new () => T,
   body: string
 ) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: RequestWithUser, res: Response, next: NextFunction) => {
     const dtoInstance = new dtoClass();
     const requestBody = {
       body: req.body,

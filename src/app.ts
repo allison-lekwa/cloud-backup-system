@@ -3,8 +3,9 @@ import bodyParser from "body-parser";
 import cors from 'cors';
 import appConfig from './app.config'
 import { Routes } from "./routes";
-import ErrorInterceptor from "./common/helper/error-interceptor";
+import ErrorInterceptor from "./common/middlewares/error-interceptor";
 import cacheClient from "./common/helper/cache-client";
+import { RequestWithUser } from "./common/interface";
 
 const app = express();
 app.use(express.json());
@@ -25,7 +26,7 @@ Routes.forEach((route) => {
     : (_req, _res, next) => {
         next();
       },
-    (req: Request, res: Response, next: Function) => {
+    (req: RequestWithUser, res: Response, next: Function) => {
       const result = new (route.controller as any)()[route.action](
         req,
         res,

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { badRequestException, conflictException, notFoundError, requestTimeoutException, unathorizedError } from './common/helper/throw-error';
 import { Response } from 'express';
+import { BadRequestException, ConflictException, NotFoundException, RequestTimeoutException, UnauthorizedException } from './common/helper/throw-error';
 export class AppUtilities {
   public static async hashAuthSecret(secret: string) {
     const salt = await bcrypt.genSalt();
@@ -62,7 +62,7 @@ export class AppUtilities {
 
     return errorData;
   };
-  public static handleException(error: any, res: Response): Response {
+  public static handleException(error: any, res: Response) {
     console.error(AppUtilities.requestErrorHandler(error));
     const errorCode: string = error.code;
     const message: string = error.meta
@@ -81,7 +81,7 @@ export class AppUtilities {
       case 'P2015':
       case 'P2018':
       case 'P2025':
-        return notFoundError(res, message);
+        return new NotFoundException(message);
       case 'P2005':
       case 'P2006':
       case 'P2007':
@@ -101,18 +101,18 @@ export class AppUtilities {
       case 'P2023':
       case 'P2026':
       case 'P2027':
-        return badRequestException(res, message);
+        return new BadRequestException(message);
       case 'P2024':
-        return requestTimeoutException(res, message);
+        return new RequestTimeoutException(message);
       case 'P0001':
-        return unathorizedError(res, message);
+        return new UnauthorizedException(message);
       case 'P2002':
         const msg = `Conflict Exception: '${error.meta?.target?.[0]}' already exists!`;
-        return conflictException(res, error.meta?.target?.[0] ? msg : message);
+        return new ConflictException(error.meta?.target?.[0] ? msg : message);
       default:
         console.error(message);
         if (!!message && message.toLocaleLowerCase().includes('arg')) {
-          return badRequestException(res,
+          return new BadRequestException(
             'Invalid/Unknown field was found in the data set!',
           );
         } else {

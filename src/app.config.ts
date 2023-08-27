@@ -36,7 +36,8 @@ const appConfig = {
   redis: {
     password: env('REDIS_PASSWORD'),
     url: env('REDIS_URL'),
-    cacheTtl: parseInt(env.require('CACHE_TTL')),
+    cacheTtl: parseInt(env.require('REFRESH_CACHE_TTL')),
+    refreshCacheTtl: parseInt(env.require('REFRESH_CACHE_TTL'))
   },
 
   jwt: {

@@ -6,6 +6,11 @@ export interface JwtPayload {
   isAdmin: boolean
 }
 
+export interface JwtRefreshTokenPayload {
+  email: string;
+  refreshToken: string;
+}
+
 export interface RequestWithUser extends Request {
   user: JwtPayload;
   permittedFields?: any;

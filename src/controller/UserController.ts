@@ -1,16 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from '../service/UserService';
 import { CreateUserDto } from '../dto/create-user-dto';
-// import { validationResult } from 'express-validator';
-import { throwError } from '../common/helper/throw-error';
-import { Body } from '@@/common/middlewares/validator';
-// import { ERROR_CODE } from '../constant/ERROR_CODE';
-// import { validationErrorMessage } from '../helper/validation-error-message';
+import { SignInDto } from '@@/dto/sign-in.dto';
+import { RequestWithUser } from '@@/common/interface';
 
 export class UserController {
   private userService = new UserService();
 
-  async register(request: Request, response: Response, next: NextFunction) {
+  async register(request: RequestWithUser, response: Response, next: NextFunction) {
     const createUser: CreateUserDto = request.body;
     try {
       const user = await this.userService.register(createUser);
@@ -20,5 +17,37 @@ export class UserController {
       next(error);
     }
   }
+
+  async login(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {      
+      const loginDto: SignInDto = req.body;
+      const result = await this.userService.signIn(loginDto)
+        
+      res.status(200).json({
+        success: true,
+        message: {
+            accessToken: result.accessToken,
+            refreshToken: result.refreshToken
+        }
+      });
+    } catch (error) {
+        next(error);
+    }
+  }
+
+  async logout(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+        const { email } = req.user; 
+        await this.userService.deleteUserRefreshToken({email});
+
+        res.status(200)
+          .json({
+            success: true,
+            message: `Logout finished for the email ${email}`
+        })
+    } catch (error) {
+        next(error)
+    }
+};
 
 }

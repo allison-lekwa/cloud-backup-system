@@ -12,57 +12,57 @@ const jwtSecret = appConfig.jwt.secret;
 const jwtExpires = appConfig.jwt.signOptions.expiresIn;
 const jwtRefreshExpires = appConfig.jwt.refreshTokenExpiresIn;
 
-export const generateAccessToken =  (dto: JwtPayload) => {
+export const generateAccessToken =  async (dto: JwtPayload) => {
     const payload = { email: dto.email, userId: dto.userId, isAdmin: dto.isAdmin };
     const secret = jwtSecret;
     const options = { expiresIn: jwtExpires };
-    const token = sign(payload, secret, options);
+    const token = await sign(payload, secret, options);
     return token
     
 };
 
-module.exports.generateRefreshToken =  (dto: JwtPayload) => {
+export const generateRefreshToken =  async (dto: JwtPayload) => {
     const payload = { email: dto.email, userId: dto.userId, isAdmin: dto.isAdmin };
-    const secret = jwtRefreshSecret;
+    const secret = jwtSecret;
     const options = { expiresIn: jwtRefreshExpires};
-    const token = sign(payload, secret, options);
+    const token = await sign(payload, secret, options);
     return token
 };
 
-module.exports.generateVerificationToken = (email: string) => {
+export const generateVerificationToken = async (email: string) => {
     const payload = { email: email };
-    const secret = jwtVerificationSecret;
-    const options = { expiresIn: jwtVerificationExpires };
-    const token = sign(payload, secret, options);
+    const secret = jwtSecret;
+    const options = { expiresIn: jwtExpires };
+    const token = await sign(payload, secret, options);
   
     return token
 }
 
-module.exports.generatePasswordResetToken = (email: string, oldPassword: string) => {
+export const generatePasswordResetToken = (email: string, oldPassword: string) => {
     const payload = { email: email };
-    const secret = jwtRefreshSecret + oldPassword;
-    const options = { expiresIn: jwt };
+    const secret = jwtSecret + oldPassword;
+    const options = { expiresIn: jwtExpires };
     const token = sign(payload, secret, options);
     return token;
 }
 
-module.exports.decodeAccessToken = (accessToken: string) => {
-    return verify(accessToken, accessTokenSecret);
+export const decodeAccessToken = (accessToken: string) => {
+    return verify(accessToken, jwtSecret);
 }
 
-module.exports.decodeRefreshToken = (refreshToken: string) => {
-    return verify(refreshToken, refreshTokenSecret);
+export const decodeRefreshToken = (refreshToken: string) => {
+    return verify(refreshToken, jwtSecret);
 }
 
 module.exports.decodeVerificationToken = (verificationToken: string) => {
-    return verify(verificationToken, verificationSecret)
+    return verify(verificationToken, jwtSecret)
 }
 
-module.exports.decodePasswordResetToken = (passwordResetToken: string, currentPassword: string) => {
-    const secret = passwordResetSecret + currentPassword;
+export const decodePasswordResetToken = (passwordResetToken: string, currentPassword: string) => {
+    const secret = jwtSecret + currentPassword;
     return verify(passwordResetToken, secret);
 }
 
-module.exports.getTokenFromTokenHeader = (tokenHeader: string) => {
+export const getTokenFromTokenHeader = (tokenHeader: string) => {
     return tokenHeader.split(" ")[1].trim();
 }
