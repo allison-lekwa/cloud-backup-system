@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 import { BadRequestException, ConflictException, NotFoundException, RequestTimeoutException, UnauthorizedException } from './common/helper/throw-error';
 export class AppUtilities {
   public static async hashAuthSecret(secret: string) {
@@ -119,5 +120,9 @@ export class AppUtilities {
           return error;
         }
     }
+  }
+
+  public static generateUniqueKey(): string {
+    return uuidv4();
   }
 }

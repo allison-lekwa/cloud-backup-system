@@ -17,17 +17,17 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "paths": {
       "@@/*": ["src/*"],
       "@@auth/*": ["src/auth/*"],
       "@@base/*": ["src/base/*"],
       "@@billing/*": ["src/billing/*"],
       "@@common/*": ["src/common/*"],
-      "@@crm/*": ["src/crm/*"],
+      "@@dto/*": ["src/dto/*"],
       "@@prisma/*": ["node_modules/.prisma/*"],
-      "@@scheduler/*": ["src/scheduler/*"],
-      "@@tenant/*": ["src/tenant/*"],
+      "@@controller/*": ["src/controller/*"],
+      "@@service/*": ["src/service/*"],
     }
   }
 }

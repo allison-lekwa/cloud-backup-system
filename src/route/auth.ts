@@ -2,6 +2,7 @@ import { SignInDto } from "../dto/sign-in.dto";
 import { Body } from "../common/middlewares/validator";
 import { UserController } from "../controller/UserController";
 import { CreateUserDto } from "../dto/create-user-dto";
+import { authorizeAccess, authorizeRefresh } from "../common/middlewares/authenticate";
 
 export const AuthRoutes = [
   {
@@ -9,7 +10,7 @@ export const AuthRoutes = [
     route: '/auth/register',
     controller: UserController,
     action: 'register',
-    middleware: null,
+    middleware: authorizeAccess,
     validation: Body(CreateUserDto)
   },
 
@@ -20,5 +21,14 @@ export const AuthRoutes = [
     action: 'login',
     middleware: null,
     validation: Body(SignInDto),
+  },
+
+  {
+    method: 'delete',
+    route: '/auth/logout',
+    controller: UserController,
+    action: 'logout',
+    middleware: authorizeRefresh,
+    validation: null,
   },
 ];

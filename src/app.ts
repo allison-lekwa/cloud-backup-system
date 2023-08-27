@@ -1,5 +1,6 @@
-import express, { Request, Response } from "express"
+import express, { Response } from "express"
 import bodyParser from "body-parser";
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import appConfig from './app.config'
 import { Routes } from "./routes";
@@ -10,8 +11,9 @@ import { RequestWithUser } from "./common/interface";
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '200mb' }));
+app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
+app.use(cookieParser());
 
 // register express routes from defined application routes
 Routes.forEach((route) => {
@@ -19,11 +21,11 @@ Routes.forEach((route) => {
     route.route,
     route.middleware
       ? route.middleware
-      : (_req, _res, next) => {
+      : (req: RequestWithUser, res: Response, next: Function) => {
           next();
         },
     route.validation ? route.validation
-    : (_req, _res, next) => {
+    : (req: RequestWithUser, res: Response, next: Function) => {
         next();
       },
     (req: RequestWithUser, res: Response, next: Function) => {

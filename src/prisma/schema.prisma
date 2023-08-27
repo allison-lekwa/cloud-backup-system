@@ -26,6 +26,7 @@ model CoreUser {
   updatedAt      DateTime                @default(now()) @db.Timestamptz(6)
   updatedBy      String?                 @db.Uuid
   hashedPassword CoreUserHashedPassword?
+  files          CoreFile[]
 
   @@map("core_user")
 }
@@ -41,4 +42,21 @@ model CoreUserHashedPassword {
   user      CoreUser @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("core_user_hashed_password")
+}
+
+model CoreFile {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String?
+  url       String    @db.VarChar
+  key       String    @unique() @db.VarChar
+  eTag      String?   @db.VarChar
+  bucket    String?   @db.VarChar
+  name      String?   @db.VarChar
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  createdBy String?   @db.Uuid
+  updatedAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedBy String?   @db.Uuid
+  user      CoreUser? @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("core_file")
 }

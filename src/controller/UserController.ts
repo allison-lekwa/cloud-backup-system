@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { UserService } from '../service/UserService';
 import { CreateUserDto } from '../dto/create-user-dto';
-import { SignInDto } from '@@/dto/sign-in.dto';
-import { RequestWithUser } from '@@/common/interface';
+import { SignInDto } from '../dto/sign-in.dto';
+import { RequestWithUser } from '../common/interface';
 
 export class UserController {
   private userService = new UserService();

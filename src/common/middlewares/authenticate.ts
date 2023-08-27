@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { RequestWithUser } from "../interface";
 import { decodeAccessToken, decodeRefreshToken, getTokenFromTokenHeader } from "./jwt";
 import { BadRequestException, ForbiddenException, UnauthorizedException } from "../helper/throw-error";
-import { UserService } from "@@/service/UserService";
+import { UserService } from "../../service/UserService";
 
 const userService = new UserService();
 

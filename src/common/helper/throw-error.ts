@@ -62,3 +62,12 @@ export class RequestTimeoutException extends ApplicationError {
 
   getCode() { return 408; }    
 };
+
+export class NotAcceptableException extends ApplicationError {
+  constructor(message: string) {
+      super(message);
+      this.name = 'NotAcceptable';
+  }
+
+  getCode() { return 406; }    
+};

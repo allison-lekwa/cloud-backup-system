@@ -59,6 +59,9 @@ const appConfig = {
     S3Secret: env.require('AWS_S3_ACCESS_KEY_SECRET'),
     S3Bucket: env.require('AWS_S3_BUCKET'),
   },
+  upload: {
+    fileSize: parseInt(env('FILE_SIZE', 200 * 1000000))
+  }
 
 };
 

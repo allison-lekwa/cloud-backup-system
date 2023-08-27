@@ -6,3 +6,4 @@ const prisma = new PrismaClient()
 export const prismaDataType = Prisma;
 export const User = prisma.coreUser;
 export const HashedPassword = prisma.coreUserHashedPassword;
+export const File = prisma.coreFile;
