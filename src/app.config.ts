@@ -34,8 +34,6 @@ const appConfig = {
   },
 
   redis: {
-    host: env.require('REDIS_HOST', 'localhost'),
-    port: parseInt(env('REDIS_PORT', '6379')),
     password: env('REDIS_PASSWORD'),
     url: env('REDIS_URL'),
     cacheTtl: parseInt(env.require('CACHE_TTL')),
@@ -43,6 +41,8 @@ const appConfig = {
 
   jwt: {
     secret: env.require('JWT_SECRET'),
+    refreshSecret: env.require('JWT_REFRESH_SECRET'),
+    verificationSecret: env.require('JWT_VERIFATION_SECRET'),
     signOptions: {
       expiresIn: parseInt(env('JWT_EXPIRES', 30 * 60)),
     },
@@ -52,6 +52,18 @@ const appConfig = {
         6 * 60 * 60, // 6 hrs
       ),
     ),
+    verificationTokenExpiresIn: parseInt(
+      env(
+        'JWT_VERIFICATIN_TOKEN_EXPIRES',
+        5 * 60, // 5 mins
+      )
+    ),
+    passwordResetTokenExpiresIn: parseInt(
+      env(
+        'JWT_RESET_TOKEN_EXPIRES',
+        5 * 60,
+      )
+    )
   },
 
   aws: {
