@@ -17,7 +17,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "paths": {
       "@@/*": ["src/*"],
       "@@auth/*": ["src/auth/*"],

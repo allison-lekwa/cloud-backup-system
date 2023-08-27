@@ -1,6 +1,6 @@
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 // get config vars
-dotenv.config();
+dotenv.config({ path: __dirname+'/.env' });
 
 const env = (key: string, defaultVal: any = undefined) => {
   return process.env[key] || defaultVal;

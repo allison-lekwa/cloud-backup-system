@@ -10,7 +10,7 @@ export const AuthRoutes = [
     route: '/auth/register',
     controller: UserController,
     action: 'register',
-    middleware: authorizeAccess,
+    middleware: null,
     validation: Body(CreateUserDto)
   },
 
