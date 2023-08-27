@@ -10,9 +10,7 @@ import appConfig from '../../app.config'
 
 const jwtSecret = appConfig.jwt.secret;
 const jwtExpires = appConfig.jwt.signOptions.expiresIn;
-const jwtRefreshSecret = appConfig.jwt.refreshSecret;
 const jwtRefreshExpires = appConfig.jwt.refreshTokenExpiresIn;
-const jwtVerificationExpires = appConfig.jwt.verificationTokenExpiresIn;
 
 export const generateAccessToken =  (dto: JwtPayload) => {
     const payload = { email: dto.email, userId: dto.userId, isAdmin: dto.isAdmin };
@@ -33,8 +31,8 @@ module.exports.generateRefreshToken =  (dto: JwtPayload) => {
 
 module.exports.generateVerificationToken = (email: string) => {
     const payload = { email: email };
-    const secret = verificationSecret;
-    const options = { expiresIn: verificationTokenTtl };
+    const secret = jwtVerificationSecret;
+    const options = { expiresIn: jwtVerificationExpires };
     const token = sign(payload, secret, options);
   
     return token
@@ -42,8 +40,8 @@ module.exports.generateVerificationToken = (email: string) => {
 
 module.exports.generatePasswordResetToken = (email: string, oldPassword: string) => {
     const payload = { email: email };
-    const secret = passwordResetSecret + oldPassword;
-    const options = { expiresIn: passwordResetTokenTtl };
+    const secret = jwtRefreshSecret + oldPassword;
+    const options = { expiresIn: jwt };
     const token = sign(payload, secret, options);
     return token;
 }
