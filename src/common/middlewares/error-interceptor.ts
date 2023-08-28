@@ -4,7 +4,9 @@ import { AppUtilities } from "../../app.utilities";
 const ErrorInterceptor = (err: any, req: Request, res: Response, next: NextFunction) => {
   console.log("Middleware Error Handling");
   const error = AppUtilities.handleException(err, res)
-  const statusCode = error.getCode();
+  console.log(error);
+  
+  const statusCode = 400;
   return res.status(statusCode).json({
     success: false,
     message: error.message

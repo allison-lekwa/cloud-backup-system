@@ -114,7 +114,7 @@ export class AppUtilities {
         console.error(message);
         if (!!message && message.toLocaleLowerCase().includes('arg')) {
           return new BadRequestException(
-            'Invalid/Unknown field was found in the data set!',
+            message ? message : 'Invalid/Unknown field was found in the data set!',
           );
         } else {
           return error;

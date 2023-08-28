@@ -1,5 +1,5 @@
 import { S3FilePrivacy } from '../common/interface';
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class UploadFileDto {
   @IsNotEmpty()
@@ -8,4 +8,8 @@ export class UploadFileDto {
 
   @IsNotEmpty()
   imageBuffer: Buffer;
+
+  @IsNotEmpty()
+  @IsString()
+  dataType: string;
 }

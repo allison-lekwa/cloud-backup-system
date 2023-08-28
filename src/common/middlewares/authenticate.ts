@@ -11,6 +11,7 @@ export const authorizeAccess = (req: RequestWithUser, res: Response, next: NextF
     const tokenHeader = req.header('Authorization');
     const token = getTokenFromTokenHeader(tokenHeader);
     const decoded = decodeAccessToken(token);
+    
     req.user = decoded
     next();
   } catch (error) {
@@ -55,7 +56,7 @@ export const authorizeRefresh = async (req: RequestWithUser, resp: Response, nex
 export const authorizeAdmin = async (req: RequestWithUser, res: Response, next: NextFunction) => {
   try {
     if (req.user.isAdmin !== true) {
-        throw new ForbiddenException('Access Denied');
+      next(new ForbiddenException('Access Denied'));
     } else {
         next();
     }

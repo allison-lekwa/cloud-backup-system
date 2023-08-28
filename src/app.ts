@@ -7,6 +7,7 @@ import { Routes } from "./routes";
 import ErrorInterceptor from "./common/middlewares/error-interceptor";
 import cacheClient from "./common/helper/cache-client";
 import { RequestWithUser } from "./common/interface";
+import initScheduledJobs from "./common/cron/cron";
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,11 @@ Routes.forEach((route) => {
     route.route,
     route.middleware
       ? route.middleware
+      : (req: RequestWithUser, res: Response, next: Function) => {
+          next();
+        },
+    route.isAdminMiddleware
+      ? route.isAdminMiddleware
       : (req: RequestWithUser, res: Response, next: Function) => {
           next();
         },
@@ -44,6 +50,8 @@ Routes.forEach((route) => {
   );
 });
 app.use(ErrorInterceptor)
+
+initScheduledJobs();
 
 const PORT = appConfig.app.port;
 

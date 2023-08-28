@@ -3,7 +3,7 @@ import { ArrayMinSize, IsArray, IsOptional, ValidateNested } from 'class-validat
 
 export class UserRequestUploadDto {
   @IsOptional()
-  file?: Express.Multer.File;
+  file?: Express.Multer.File[];
 }
 
 export class BulkUserRequestUploadDto extends UserRequestUploadDto {

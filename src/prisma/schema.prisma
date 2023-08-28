@@ -45,12 +45,13 @@ model CoreUserHashedPassword {
 
 model CoreFile {
   id        String    @id @default(uuid()) @db.Uuid
-  userId    String?
+  name      String    @db.VarChar
+  userId    String?   @db.Uuid
   url       String    @db.VarChar
   key       String    @unique() @db.VarChar
   eTag      String?   @db.VarChar
   bucket    String?   @db.VarChar
-  name      String?   @db.VarChar
+  isSafe    Boolean   @default(true) @db.Boolean
   createdAt DateTime  @default(now()) @db.Timestamptz(6)
   createdBy String?   @db.Uuid
   updatedAt DateTime  @default(now()) @db.Timestamptz(6)

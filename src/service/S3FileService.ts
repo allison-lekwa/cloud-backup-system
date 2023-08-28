@@ -1,10 +1,10 @@
-import { AppUtilities } from '@@/app.utilities';
+import { AppUtilities } from '../app.utilities';
 import { S3 } from 'aws-sdk';
 import { UploadFileDto } from '../dto/upload-file.dto';
-import { CreateFileDto } from '../dto/create-file.dto';
 import { NotFoundException } from '../common/helper/throw-error';
 import appConfig from '../app.config';
-import { File } from '../common/database/prisma-client-manager';
+import fs from "fs";
+import path from "path";
 
 export class S3FileService {
   private s3Sdk: S3;
@@ -33,6 +33,7 @@ export class S3FileService {
         Bucket: this.S3Bucket,
         Body: data.imageBuffer,
         Key: AppUtilities.generateUniqueKey(),
+        ContentType: `application/${data.dataType}`
       })
       .promise();
 
@@ -40,7 +41,7 @@ export class S3FileService {
   }
 
   //Access files in AWS
-  public async getPrivateFile(key: string) {
+  public async downloadFile(key: string) {
     const stream = await this.s3Sdk
       .getObject({
         Bucket: this.S3Bucket,
@@ -53,50 +54,6 @@ export class S3FileService {
       };
     }
     throw new NotFoundException('File not found');
-  }
-
-  //Access files in AWS
-  public async getPrivateFileBuffer(key: string) {
-    const stream = await this.s3Sdk
-      .getObject({
-        Bucket: this.S3Bucket,
-        Key: key,
-      })
-      .createReadStream();
-    return new Promise<Buffer>((resolve, reject) => {
-      const chunks: Buffer[] = [];
-      stream.on('data', (chunk) => chunks.push(chunk));
-      stream.once('end', () => resolve(Buffer.concat(chunks)));
-      stream.once('error', reject);
-    });
-  }
-
-  public async getPrivateFileBase64(objectKey) {
-    try {
-      const params = {
-        Bucket: this.S3Bucket,
-        Key: objectKey,
-      };
-      const data = await this.s3Sdk.getObject(params).promise();
-      // Check for image payload and formats appropriately
-      return { body: data.Body.toString('base64'), type: data.ContentType };
-    } catch (e) {
-      throw new Error(`Could not retrieve file from S3: ${e.message}`);
-    }
-  }
-
-  public async getPrivateFile2(objectKey) {
-    try {
-      const params = {
-        Bucket: this.S3Bucket,
-        Key: objectKey,
-      };
-      const data = await this.s3Sdk.getObject(params).promise();
-      // Check for image payload and formats appropriately
-      return data.Body.toString('base64');
-    } catch (e) {
-      throw new Error(`Could not retrieve file from S3: ${e.message}`);
-    }
   }
 
   //Access files in AWS
@@ -120,23 +77,4 @@ export class S3FileService {
     }
   }
 
-  public async generatePresignedUrl(key: string) {
-    return this.s3Sdk.getSignedUrlPromise('getObject', {
-      Bucket: this.S3Bucket,
-      Key: key,
-    });
-  }
-
-  public async getPrivateFileUrl(key: string) {
-    try {
-      const params = {
-        Bucket: this.S3Bucket,
-        Key: key,
-      };
-      const url = await this.s3Sdk.getSignedUrl('getObject', params);
-      return url;
-    } catch (e) {
-      throw new Error(`Could not retrieve file from S3: ${e.message}`);
-    }
-  }
 }

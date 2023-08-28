@@ -1,7 +1,8 @@
 import { AuthRoutes } from './route/auth';
-import { UploadRoutes } from './route/file-upload';
+import { FilesRoutes } from './route/file';
 
 export const Routes = [
+  ...FilesRoutes,
   ...AuthRoutes,
-  ...UploadRoutes,
+  
 ];
