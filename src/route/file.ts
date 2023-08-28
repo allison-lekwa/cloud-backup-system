@@ -22,7 +22,7 @@ export const FilesRoutes = [
     route: '/files/download',
     controller: BackUpFileController,
     action: 'downloadFiles',
-    middleware: null,
+    middleware: authorizeAccess,
     isAdminMiddleware: null,
     validation: Body(IdsDto)
   },
