@@ -4,6 +4,7 @@ import { CreateUserDto } from '../dto/create-user-dto';
 import { SignInDto } from '../dto/sign-in.dto';
 import { JwtPayload, RequestWithUser } from '../common/interface';
 import { IdsDto } from '../dto/ids.dto';
+import { CreateFileDirDto } from '@@/dto/create-file-dir.dto';
 
 export class UserController {
   private userService = new UserService();
@@ -59,6 +60,22 @@ export class UserController {
         .json({
           success: true,
           result: result,
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async createUserFileDir(req: RequestWithUser, res: Response, next: NextFunction) {
+    const dto: CreateFileDirDto = req.body;
+    const user: JwtPayload = req.user;
+    try {
+      const result = await this.userService.createDirFile(dto, user);
+
+      res.status(200)
+        .json({
+          success: true,
+          message: result,
       })
     } catch (error) {
       next(error)

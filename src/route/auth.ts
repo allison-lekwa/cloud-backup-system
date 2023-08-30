@@ -4,6 +4,7 @@ import { UserController } from "../controller/UserController";
 import { CreateUserDto } from "../dto/create-user-dto";
 import { authorizeAccess, authorizeRefresh } from "../common/middlewares/authenticate";
 import { IdsDto } from "../dto/ids.dto";
+import { CreateFileDirDto } from "../dto/create-file-dir.dto";
 
 export const AuthRoutes = [
   {
@@ -24,6 +25,16 @@ export const AuthRoutes = [
     middleware: null,
     isAdminMiddleware: null,
     validation: Body(SignInDto),
+  },
+
+  {
+    method: 'post',
+    route: '/auth/create-folder',
+    controller: UserController,
+    action: 'createUserFileDir',
+    middleware: authorizeAccess,
+    isAdminMiddleware: null,
+    validation: Body(CreateFileDirDto)
   },
 
   {

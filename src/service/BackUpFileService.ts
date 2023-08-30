@@ -1,9 +1,8 @@
 import { BadRequestException, NotAcceptableException, UnauthorizedException } from "../common/helper/throw-error";
 import { S3FileService } from "./S3FileService";
 import { JwtPayload, S3FilePrivacy } from "../common/interface";
-import { File } from "../common/database/prisma-client-manager";
+import { File, FileDir } from "../common/database/prisma-client-manager";
 import { IdsDto } from "@@/dto/ids.dto";
-import { Readable } from "stream";
 import fs from "fs";
 import path from "path";
 
@@ -43,14 +42,24 @@ export class BackUpFileService {
     
   }
 
-  async downloadBackupFiles(dto: IdsDto) {
+  async downloadBackupFiles(dto: IdsDto, user: JwtPayload) {
     const files = await File.findMany({
       where: { id: { in: dto.ids }, isSafe: true }
     });
 
+    const fileFolder = await FileDir.findUnique({
+      where: {
+        userId: user.userId,
+      }
+    })
+
+    if (!fs.existsSync(fileFolder.name)) {
+      fs.mkdirSync(fileFolder.name);
+    }
+
     files.forEach(async file => {
       const {stream} = await this.s3FileService.downloadFile(file.key);
-      let download = fs.createWriteStream(path.join(__dirname, `public/${file.name}`));
+      let download = fs.createWriteStream(`./${fileFolder.name}/${file.name}`);
       
       // const dataStream = Readable.from([stream])
         return new Promise<void>((resolve, reject) => {

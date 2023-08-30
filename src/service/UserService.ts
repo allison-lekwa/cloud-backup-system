@@ -9,6 +9,10 @@ import appConfig from '../app.config';
 import { generateAccessToken, generateRefreshToken } from '../common/middlewares/jwt';
 import { SignInDto } from '../dto/sign-in.dto';
 import { IdsDto } from '../dto/ids.dto';
+import { CreateFileDirDto } from '../dto/create-file-dir.dto';
+import fs from "fs";
+import path from "path";
+import { BadRequestException } from '../common/helper/throw-error';
 export class UserService {
 
   async register({ password, ...createUserDto }: CreateUserDto) {
@@ -90,6 +94,39 @@ async setUserRefreshToken(dto: JwtRefreshTokenPayload) {
   const reddisRefreshExpires = appConfig.redis.cacheTtl
   await cacheClient.set(dto.email, JSON.stringify(dto.refreshToken), { EX: reddisRefreshExpires });
 };
+
+async createDirFile({name}: CreateFileDirDto, user: JwtPayload) {
+  // create a new directory 'assets' in the root directory
+  const folderPath = `./${name}`;
+
+  if (fs.existsSync(folderPath)) {
+    throw new BadRequestException('Folder name already exist')
+  }
+  fs.mkdirSync(folderPath);
+
+  await User.update({
+    where: { id: user.userId },
+    data: {
+      directory: {
+        upsert: {
+            where: {
+              userId: user.userId
+            },
+            
+            create: {
+              name,
+              createdBy: user.userId,
+            },
+            update: {
+              name,
+              updatedBy: user.userId,
+            },
+        }
+      }
+    }
+  })
+  return 'File directory created successfully'
+}
 
 async makeUserAdmin({ids}: IdsDto, user: JwtPayload) {
   const users = await User.updateMany({

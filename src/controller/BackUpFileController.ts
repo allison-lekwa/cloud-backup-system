@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { JwtPayload, RequestWithUser } from '../common/interface';
 import { BackUpFileService } from '../service/BackUpFileService';
-import { IdsDto } from '@@/dto/ids.dto';
+import { IdsDto } from '../dto/ids.dto';
 
 export class BackUpFileController {
   private fileService = new BackUpFileService();
@@ -51,12 +51,12 @@ export class BackUpFileController {
 
   async downloadFiles(req: RequestWithUser, res: Response, next: NextFunction) {
     const dto: IdsDto = req.body;
+    const user: JwtPayload = req.user;
     
     try {
-      
-      const count = await this.fileService.downloadBackupFiles(dto);
+      const count = await this.fileService.downloadBackupFiles(dto, user);
     
-      return res.status(201).json(`${count} files backed up successfully!!!`);
+      return res.status(201).json(`${count} files downloaded successfully!!!`);
     } catch (error) {
       next(error);
     }
