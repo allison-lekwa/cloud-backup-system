@@ -62,7 +62,7 @@ export class BackUpFileService {
       let download = fs.createWriteStream(`./${fileFolder.name}/${file.name}`);
       
       // const dataStream = Readable.from([stream])
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
           stream
         .on('error', (error) => {
             return reject(error);
