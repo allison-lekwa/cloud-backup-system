@@ -54,7 +54,7 @@ RUN apt-get update -qq && \
 COPY --from=build /app /app
 
 # Entry point prepares the database.
-# ENTRYPOINT [ "/app/docker-entrypoint.ts" ]
+# ENTRYPOINT [ "/src/app/docker-entrypoint.ts" ]
 
 COPY .env .env
 
