@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "This project serves as a cloud backup system",
   "main": "app.ts",
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
